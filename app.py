@@ -59,6 +59,7 @@ def index():
 
 @app.route('/robot')
 def robot():
+    # Get the current mate values
     response = requests.get(
         os.path.join(
             OS_DOMAIN,
@@ -77,38 +78,28 @@ def robot():
     MATES_DEG = []
 
     response = response.json()
-
+    # I'm interested in mates that start with "Arm"
     for mate in response["mateValues"]:
         if mate['mateName'].split('_')[0] == "Arm":
-            MATES_DEG.append((mate['mateName'],degrees(mate['rotationZ'])))
             MATES.append(mate)
 
     msg = ""
+    # If we are getting here from the reset button, set all mate values to zero
     if request.args.get('reset'):
         msg = "Reset"
         for mate in MATES:
             mate['rotationZ'] = 0
+            MATES_DEG.append((mate['mateName'],0))
 
-        response = requests.post(
-            os.path.join(
-                OS_DOMAIN,
-                "api/assemblies/d/{}/w/{}/e/{}/matevalues".format(
-                DID, WID, EID
-                )
-            ),
-            headers={
-                "Accept": "application/json;charset=UTF-8; qs=0.09",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + ACCESS_TOKEN
-            },
-            json = {"mateValues":MATES}
-        )
-        response = response.json()  
-
+    # If we are getting here from the add pi/8 button, add pi/8
     if request.args.get('mate_values'):
         msg = request.args.get('mate_values')
         for mate in MATES:
             mate['rotationZ'] = mate['rotationZ'] + pi/8
+            MATES_DEG.append((mate['mateName'],round(degrees(mate['rotationZ'])),3))
+
+    # Either way, update the mates
+    if request.args.get('mate_values') or request.args.get('reset'):
 
         response = requests.post(
             os.path.join(
@@ -126,6 +117,10 @@ def robot():
         )
         response = response.json()        
     
+    else:
+        for mate in MATES:
+            MATES_DEG.append((mate['mateName'],round(degrees(mate['rotationZ']),3)))
+
     return render_template('robot.html', mate_values = MATES_DEG, msg=msg)
 
 @app.route('/elements')
