@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}" />
+    <title>Hello world!</title>
+  </head>
+  <body>
+    <div class="title3">Port 8000 - Function 3 (Color Shuffler)</div>
+    <table cellspacing="6">
+        <tr>
+            <th>Part Name</th>
+            <th>Part Color</th>
+        </tr>
+        {% if parts %}
+            {% for p in parts %}
+            <tr>
+                <td>{{ p[0] }}</td>
+                <td bgcolor="#{{ p[2] }}"><p style="margin:0px; padding: 0px 4px;">{{ p[2] }}</p></td>
+                <td>
+                    <form action="/colors">
+                        <input type="hidden" id="pid" name="pid" value="{{ p[1] }}" />
+                        <input type="submit" value="Shuffle Color" />
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+      
+  </body>
+</html>

@@ -1,6 +1,43 @@
 body {
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.title1, .title2, .title3 {
+    font-size: 2em;
+    margin-bottom: .5em;
+    padding: 5px;
+}
+
+.title1 {
+    background-color:#D0DBE5;
+}
+.title2 {
+    background-color:bisque;
+}
+
 .part_list {
     margin:1px;
 }
+
+.title3 {
+    background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet);
+}
+
+input[type=button], input[type=submit] {
+    background-color: #666;
+    border:#999 solid 1px;
+    color: white;
+    padding: 8px 16px;
+    margin: 4px 0px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  input[type=button]:hover, input[type=submit]:hover {
+    background-color: #999; /* Green */
+  }
+
+  .msg {
+    background-color: #ffffcc; 
+    padding:4px;
+ }

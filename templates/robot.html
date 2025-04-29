@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}" />
+    <title>Hello world!</title>
+  </head>
+  <body>
+    {% if msg %}
+      <p class="msg">{{ msg }}</p>
+    {% endif %}
+    <div class="title2">Port 8000 - Function 4 (Robot)</div>
+    <strong>Mates:</strong>
+    {% for mate in mate_values %}
+        <p class="part_list">{{ mate[0] }} | {{ mate[1] }}</p>
+    {% endfor %}
+    <form action="/robot">
+      <input type="submit" name="reset" value="Reset" />
+    </form>
+    <form action="/robot">
+      <input type="submit" value="Add &pi;/8" />
+      <input type="hidden" id="mate_values" name="mate_values" value="{{ mate_values }}" />
+    </form>
+    </body>
+</html>

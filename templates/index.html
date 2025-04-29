@@ -4,40 +4,11 @@
     <title>Hello world!</title>
   </head>
   <body>
-    {%if etype == "partstudios" %}
+    <div class="title1">Port 8000 - Function 1 (Parts)</div>
       <strong>All of the parts and IDs in this part studio:</strong>
       {% for part in parts %}
           <p class="part_list">{{ part[0] }} | {{ part[1] }}</p>
       {% endfor %}
       <br>
-    {% endif %}
-    <strong>All of the elements and types in this document:</strong>
-    {% for element in elements %}
-        <p class="part_list">{{ element[0] }} | {{ element[1] }}</p>
-    {% endfor %}
-    <br>
-    <strong>Variables in this document:</strong>
-    {% if vsid == "" %}
-        <p class="part_list">You don't have one</p>
-    {% else %}
-        <p class="part_list">The VSID: {{ vsid }}</p>
-        <strong>The variables:</strong>
-        {% for var in vars %}
-            <p class="part_list">{{ var[0] }} | {{ var[1] }}</p>
-        {% endfor %}
-        <br><br>
-        <strong>The variables using ?includeValuesAndReferencedVariables=true:</strong>
-        {% for var in vars2 %}
-            <p class="part_list">{{ var[0] }} | {{ var[1] }}</p>
-        {% endfor %}
-    {% endif %}
-    <br>
-    <strong>Current Configuration:</strong>
-    <br>
-    {{ config }}
-    <br>
-    <strong>Element Type:</strong>
-    <br>
-    {{ etype }}
     </body>
 </html>
