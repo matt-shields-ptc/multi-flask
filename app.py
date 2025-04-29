@@ -20,6 +20,7 @@ with open('oauth_key.json') as f:
     OAUTH_CLIENT_ID = oauth_keys['OAUTH_CLIENT_ID']
     OAUTH_CLIENT_SECRET = oauth_keys['OAUTH_CLIENT_SECRET']
 
+# This app handles various functions, depending on the 'function' query parameter in the app extension action URL
 def handleReturn(FUNCTION):
     if FUNCTION == 'elements':
         return redirect(url_for('elements'))
@@ -57,6 +58,7 @@ def index():
 
     return render_template('index.html', parts=PARTS)
 
+# === Move robot mates ===
 @app.route('/robot')
 def robot():
     # Get the current mate values
@@ -123,6 +125,7 @@ def robot():
 
     return render_template('robot.html', mate_values = MATES_DEG, msg=msg)
 
+# === List elements in the workspace ===
 @app.route('/elements')
 def elements():
     # Just to test the API, lets get all of the elements in the workspace
@@ -149,6 +152,7 @@ def elements():
 
     return render_template('elements.html', elements=ELEMENTS)
 
+# === Part color shuffler ===
 @app.route('/colors')
 def colors():
     # Return a page that shows successful color shuffle
@@ -239,7 +243,7 @@ def colors():
 # The right panel app goes to this URL:
 # http://localhost:8000/login
 # And it sends these query string parameters:
-# did={$documentId}&wvm={$workspaceOrVersion}&wvmid={$workspaceOrVersionId}&eid={$elementId}&config={$configuration}
+# did={$documentId}&wvm={$workspaceOrVersion}&wvmid={$workspaceOrVersionId}&eid={$elementId}&config={$configuration}&function=something
 
 # === Oauth stuff.  This happens first ===
 @app.route("/login/")
@@ -250,7 +254,7 @@ def login():
     global ACCESS_TOKEN, REFRESH_TOKEN, EXPIRES_AT
     global OS_DOMAIN, OS_USER_ID, DID, WID, EID, CONFIG, FUNCTION, HOST
 
-    # set the domain, user ID, DID, WID, EID, CONFIG for use later
+    # set the domain, user ID, DID, WID, EID, CONFIG, FUNCTION for use later
     OS_DOMAIN = request.args.get('server')
     OS_USER_ID = request.args.get('userId')
     DID = request.args.get('did')
