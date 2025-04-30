@@ -4,7 +4,7 @@ import requests
 from datetime import datetime, timedelta
 import os
 from numpy.random import randint
-from math import degrees, pi
+from math import degrees, pi, floor, log10
 
 # Create the application.
 app = Flask(__name__)
@@ -28,6 +28,8 @@ def handleReturn(FUNCTION):
         return redirect(url_for('colors'))
     elif FUNCTION == 'robot':
         return redirect(url_for('robot'))
+    elif FUNCTION == 'ajax':
+        return redirect(url_for('ajax'))
     else:    
         return redirect(url_for('index'))
 
@@ -57,6 +59,11 @@ def index():
             PARTS.append(arr)
 
     return render_template('index.html', parts=PARTS)
+
+# === AJAX Testing ===
+@app.route('/ajax')
+def ajax():
+    return render_template('ajax.html', DID=DID, EID=EID, WID=WID, ACCESS_TOKEN=ACCESS_TOKEN)
 
 # === Move robot mates ===
 @app.route('/robot')
@@ -320,3 +327,54 @@ def authorize():
     EXPIRES_AT = datetime.now() + timedelta(seconds=response['expires_in'])
     
     return handleReturn(FUNCTION)
+
+# ===== API CALLS =====
+@app.route('/get-vars')
+def getvars():
+    response = requests.get(
+        os.path.join(
+            OS_DOMAIN,
+            "api/variables/d/{}/w/{}/e/{}/variables?includeValuesAndReferencedVariables=true".format(
+                DID, WID, EID
+            )
+        ), 
+        headers={
+            "Content-Type": "application/json", 
+            "Accept": "application/json;charset=UTF-8;qs=0.09", 
+            "Authorization": "Bearer " + ACCESS_TOKEN
+        }
+    )
+    
+    VARIABLES = []
+    if response.ok: 
+        response = response.json() 
+        VARIABLES = response
+
+    return VARIABLES
+
+@app.route('/get_assem_mass_props')
+def get_assem_mass_props():
+    response = requests.get(
+        os.path.join(
+            OS_DOMAIN,
+            "api/assemblies/d/{}/w/{}/e/{}/massproperties".format(
+                DID, WID, EID
+            )
+        ), 
+        headers={
+            "Content-Type": "application/json", 
+            "Accept": "application/json;charset=UTF-8;qs=0.09", 
+            "Authorization": "Bearer " + ACCESS_TOKEN
+        }
+    )
+    
+    centroid_array = []
+    if response.ok: 
+        response = response.json() 
+        centroid_array = [str(sig_figs(val, 3)) for val in response["centroid"][0:3]]
+
+    return centroid_array
+
+def sig_figs(x, precision):
+    x = float(x)
+    return round(x, -int(floor(log10(abs(x)))) + (precision - 1))

@@ -1,0 +1,43 @@
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}" />
+  <script type="text/javascript" src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+  <!-- <script type="text/javascript" src="{{ url_for('static', filename='jquery-ui.min.js') }}"></script> -->
+  <script>
+    function get_assem_mass_props() {
+      $('#update_data').prop('disabled', true).text('Loading...');
+      $.ajax({
+        url: '/get_assem_mass_props',
+        method: 'GET',
+        success: function (data) {
+          s = "x: " + data[0] + " y: " + data[1] + " z: " + data[2];
+          $('#com_data').append("<div>" + s + "</div>");
+          $('#update_data').prop('disabled', false).text('Update');
+        },
+        error: function (xhr, status, error) {
+          $('#msg').html("Error fetching Onshape data:");
+        }
+      });
+    }
+    $(document).ready(function () {
+      get_assem_mass_props();
+      $('#update_data').on('click', function () {
+        get_assem_mass_props();
+      });
+    });
+  </script>
+  <title>Hello world!</title>
+</head>
+
+<body>
+  {% if msg %}
+    <p class="msg" id="msg">{{ msg }}</p>
+  {% endif %}
+  <div class="title2">Port 8000 - Function 5 (AJAX)</div>
+  <div><strong>Center of Mass</strong></div>
+  <div id="com_data"></div>
+  <button id="update_data">Update</button>
+</body>
+
+</html>
